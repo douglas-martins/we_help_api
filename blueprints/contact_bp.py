@@ -1,7 +1,9 @@
-from flask import request, jsonify, Blueprint
 from datetime import date
-from src.app import db
-from src.models_api.contact_model import Contact
+
+from flask import request, jsonify, Blueprint
+
+from app import db
+from models.contact_model import Contact
 
 contact_api = Blueprint('contact_api', __name__)
 

@@ -1,5 +1,5 @@
 import os
-from global_paths import DATABASE_URL
+from config.global_paths import DATABASE_URL
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
 

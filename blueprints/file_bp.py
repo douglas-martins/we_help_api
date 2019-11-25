@@ -1,7 +1,7 @@
 from flask import request, Blueprint, jsonify
 from datetime import date
-from src.app import db
-from src.models_api.file_model import File
+from app import db
+from models.file_model import File
 
 file_api = Blueprint('file_api', __name__)
 
