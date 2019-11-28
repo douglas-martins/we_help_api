@@ -10,8 +10,8 @@
                existing_type=sa.VARCHAR(),
                nullable=True)
     op.drop_table('chat_history_media')
-    op.drop_table('chat_history')
     op.drop_table('chat_room')
+    op.drop_table('chat_history')
     op.drop_table('welcoming_available')
     op.drop_table('welcoming')
     op.drop_table('user_anonymous')

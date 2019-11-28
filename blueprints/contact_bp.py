@@ -13,13 +13,13 @@ def add():
     content = request.get_json()
     created_at = date.today()
 
-    try:
-        contact = Contact(
-            telephone=content['telephone'],
-            email=content['email'],
-            created_at=created_at
-        )
+    contact = Contact(
+        telephone=content['telephone'] if content.get('telephone') else None,
+        email=content['email'] if content.get('email') else None,
+        created_at=created_at
+    )
 
+    try:
         db.session.add(contact)
         db.session.commit()
 

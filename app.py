@@ -1,5 +1,5 @@
 from config.global_paths import APP_SETTINGS
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -10,15 +10,17 @@ db = SQLAlchemy(app)
 
 from blueprints.contact_bp import contact_api
 from blueprints.file_bp import file_api
+from blueprints.person_bp import person_api
 
 app.register_blueprint(contact_api)
 app.register_blueprint(file_api)
+app.register_blueprint(person_api)
 
 
 @app.route("/")
-def hello():
-    return "Hello World!"
+def home():
+    return render_template('home.html')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
