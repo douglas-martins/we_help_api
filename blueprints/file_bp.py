@@ -11,12 +11,12 @@ def add():
     content = request.get_json()
     created_at = date.today()
 
-    try:
-        file = File(
-            url=content['url'],
-            created_at=created_at
-        )
+    file = File(
+        url=content['url'],
+        created_at=created_at
+    )
 
+    try:
         db.session.add(file)
         db.session.commit()
 

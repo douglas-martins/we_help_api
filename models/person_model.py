@@ -17,10 +17,10 @@ class Person(db.Model):
     updated_at = db.Column(db.Date())
     deleted_at = db.Column(db.Date())
 
-    def __init__(self, name, contact, file, created_at):
+    def __init__(self, name, contact_id, file_id, created_at):
         self.name = name
-        self.contact = contact
-        self.file = file
+        self.contact_id = contact_id
+        self.file_id = file_id
         self.created_at = created_at
 
     def __repr__(self):
@@ -30,8 +30,8 @@ class Person(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'contact': self.contact,
-            'file': self.file,
+            'contact': self.contact.serialize(),
+            'file': self.file.serialize(),
             'createdAt': self.created_at,
             'updatedAt': self.updated_at,
             'deletedAt': self.deleted_at
