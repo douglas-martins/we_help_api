@@ -12,6 +12,7 @@ class Contact(db.Model):
     deleted_at = db.Column(db.Date())
 
     person = db.relationship("Person", back_populates="contact")
+    aid_institution = db.relationship("AidInstitution", back_populates="contact")
 
     def __init__(self, telephone, email, created_at):
         self.telephone = telephone

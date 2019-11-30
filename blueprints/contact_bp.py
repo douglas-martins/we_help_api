@@ -25,6 +25,7 @@ def add():
 
         return "Contact added. contact id={}".format(contact.id)
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 

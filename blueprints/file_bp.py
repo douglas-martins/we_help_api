@@ -22,6 +22,7 @@ def add():
 
         return "File added. file id={}".format(file.id)
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 

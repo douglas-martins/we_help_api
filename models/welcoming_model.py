@@ -7,8 +7,11 @@ class Welcoming(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     password = db.Column(db.String)
 
-    person_id = db.Column(db.Integer, db.ForeignKey('person_id'))
+    person_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     person = db.relationship('Person', back_populates='welcoming')
+
+    welcoming_available = db.relationship('WelcomingAvailable', back_populates='welcoming')
+    chat_history = db.relationship('ChatHistory', back_populates='welcoming')
 
     created_at = db.Column(db.Date())
     updated_at = db.Column(db.Date())

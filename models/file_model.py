@@ -10,6 +10,8 @@ class File(db.Model):
     deleted_at = db.Column(db.Date())
 
     person = db.relationship("Person", back_populates="file")
+    aid_institution = db.relationship("AidInstitution", back_populates="file")
+    chat_history_media = db.relationship('ChatHistoryMedia', back_populates='file')
 
     def __init__(self, url, created_at):
         self.url = url

@@ -1,0 +1,35 @@
+from app import db
+
+
+class WelcomingAvailable(db.Model):
+    __tablename__ = 'welcoming_available'
+
+    id = db.Column(db.Integer, primary_key=True)
+    on_chat = db.Column(db.Boolean)
+
+    welcoming_id = db.Column(db.Integer, db.ForeignKey('welcoming.id'))
+    welcoming = db.relationship('Welcoming', back_populates='welcoming_available')
+
+    chat_room = db.relationship('ChatRoom', back_populates='welcoming_available')
+
+    created_at = db.Column(db.Date)
+    updated_at = db.Column(db.Date)
+    deleted_at = db.Column(db.Date)
+
+    def __init__(self, welcoming_id, on_chat, created_at):
+        self.welcoming_id = welcoming_id
+        self.on_chat = on_chat
+        self.created_at = created_at
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'welcoming': self.welcoming.serialize(),
+            'onChat': self.on_chat,
+            'createdAt': self.created_at,
+            'updatedAt': self.updated_at,
+            'deletedAt': self.deleted_at
+        }

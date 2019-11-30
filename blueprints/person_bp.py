@@ -3,9 +3,8 @@ from datetime import date
 from flask import request, jsonify, Blueprint
 
 from app import db
+from models.models_create_aux import set_contact, set_file
 from models.person_model import Person
-from models.contact_model import Contact
-from models.file_model import File
 
 person_api = Blueprint('person_api', __name__)
 
@@ -14,8 +13,8 @@ person_api = Blueprint('person_api', __name__)
 def add():
     content = request.get_json()
     created_at = date.today()
-    contact_id = __set_contact(content, created_at)
-    file_id = __set_file(content, created_at)
+    contact_id = set_contact(content['contact'], created_at)
+    file_id = set_file(content['file'], created_at)
 
     person = Person(
         contact_id=contact_id,
@@ -30,6 +29,7 @@ def add():
 
         return "Person added. person id={}".format(person.id)
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -43,42 +43,11 @@ def fetch_all():
         return str(e)
 
 
-@person_api.route("/persons/<id_>", methods=['GET'])
+@person_api.route("/person/<id_>", methods=['GET'])
 def fetch(id_):
     try:
         person = Person.query.filter_by(id=id_).first()
 
         return jsonify(person.serialize())
-    except Exception as e:
-        return str(e)
-
-
-def __set_contact(content, created_at):
-    contact = Contact(
-        telephone=content['contact']['telephone'],
-        email=content['contact']['email'],
-        created_at=created_at
-    )
-
-    try:
-        db.session.add(contact)
-        db.session.commit()
-
-        return contact.id
-    except Exception as e:
-        return str(e)
-
-
-def __set_file(content, created_at):
-    file = File(
-        url=content['file']['url'],
-        created_at=created_at
-    )
-
-    try:
-        db.session.add(file)
-        db.session.commit()
-
-        return file.id
     except Exception as e:
         return str(e)
