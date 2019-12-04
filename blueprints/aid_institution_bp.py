@@ -34,6 +34,21 @@ def add():
         return str(e)
 
 
+@aid_institution_api.route("/aid-institution/<id_>", methods=['PATCH'])
+def patch(id_):
+    aid_institution = AidInstitution.query.filter_by(id=id_).first()
+    aid_institution.patch_model(request.get_json())
+
+    try:
+        db.session.add(aid_institution)
+        db.session.commit()
+
+        return jsonify(aid_institution.serialize())
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+
+
 @aid_institution_api.route('/aid-institutions', methods=['GET'])
 def fetch_all():
     try:

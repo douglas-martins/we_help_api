@@ -32,6 +32,21 @@ def add():
         return str(e)
 
 
+@welcoming_available_api.route("/welcoming-available/<id_>", methods=['PATCH'])
+def patch(id_):
+    welcoming_available = WelcomingAvailable.query.filter_by(id=id_).first()
+    welcoming_available.patch_model(request.get_json())
+
+    try:
+        db.session.add(welcoming_available)
+        db.session.commit()
+
+        return jsonify(welcoming_available.serialize())
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+
+
 @welcoming_available_api.route('/welcomings-availables', methods=['GET'])
 def fetch_all():
     try:

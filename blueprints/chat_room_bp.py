@@ -34,6 +34,21 @@ def add():
         return str(e)
 
 
+@chat_room_api.route("/chat-room/<id_>", methods=['PATCH'])
+def patch(id_):
+    chat_room = ChatRoom.query.filter_by(id=id_).first()
+    chat_room.patch_model(request.get_json())
+
+    try:
+        db.session.add(chat_room)
+        db.session.commit()
+
+        return jsonify(chat_room.serialize())
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+
+
 @chat_room_api.route('/chats-rooms', methods=['GET'])
 def fetch_all():
     try:

@@ -31,6 +31,21 @@ def add():
         return str(e)
 
 
+@welcoming_api.route("/welcoming/<id_>", methods=['PATCH'])
+def patch(id_):
+    welcoming = Welcoming.query.filter_by(id=id_).first()
+    welcoming.patch_model(request.get_json())
+
+    try:
+        db.session.add(welcoming)
+        db.session.commit()
+
+        return jsonify(welcoming.serialize())
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+
+
 @welcoming_api.route("/welcomings", methods=['GET'])
 def fetch_all():
     try:

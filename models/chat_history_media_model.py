@@ -21,6 +21,12 @@ class ChatHistoryMedia(db.Model):
         self.file_id = file_id,
         self.created_at = created_at
 
+    def patch_model(self, content):
+        self.chat_history = content['chatHistory'] if content.get('chatHistory') else self.chat_history
+        self.file = content['file'] if content.get('file') else self.file
+        self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
+        self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+
     def __repr__(self):
         return '<id {}>'.format(self.id)
 

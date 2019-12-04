@@ -17,6 +17,10 @@ class File(db.Model):
         self.url = url
         self.created_at = created_at
 
+    def patch_model(self, content):
+        self.url = content['url'] if content.get('url') else self.url
+        self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+
     def __repr__(self):
         return '<id {}>'.format(self.id)
 
@@ -24,6 +28,6 @@ class File(db.Model):
         return {
             'id': self.id,
             'url': self.url,
-            'created_at': self.created_at,
-            'deleted_at': self.deleted_at
+            'createdAt': self.created_at,
+            'deletedAt': self.deleted_at
         }

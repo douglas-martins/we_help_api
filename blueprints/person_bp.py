@@ -33,6 +33,21 @@ def add():
         return str(e)
 
 
+@person_api.route("/person/<id_>", methods=['PATCH'])
+def patch(id_):
+    person = Person.query.filter_by(id=id_).first()
+    person.patch_model(request.get_json())
+
+    try:
+        db.session.add(person)
+        db.session.commit()
+
+        return jsonify(person.serialize())
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+
+
 @person_api.route("/persons", methods=['GET'])
 def fetch_all():
     try:

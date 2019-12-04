@@ -22,6 +22,12 @@ class Welcoming(db.Model):
         self.person_id = person_id
         self.created_at = created_at
 
+    def patch_model(self, content):
+        self.password = content['password'] if content.get('password') else self.password
+        self.person = content['person'] if content.get('person') else self.person
+        self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
+        self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+
     def __repr__(self):
         return '<id {}>'.format(self.id)
 

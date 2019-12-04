@@ -1,5 +1,8 @@
 from flask import request, Blueprint, jsonify
 from datetime import date
+
+from jsonpatch import JsonPatch
+
 from app import db
 from models.file_model import File
 
@@ -20,7 +23,23 @@ def add():
         db.session.add(file)
         db.session.commit()
 
-        return "File added. file id={}".format(file.id)
+        # return "File added. file id={}".format(file.id)
+        return jsonify(file.serialize())
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+
+
+@file_api.route("/file/<id_>", methods=['PATCH'])
+def patch(id_):
+    file = File.query.filter_by(id=id_).first()
+    file.patch_model(request.get_json())
+
+    try:
+        db.session.add(file)
+        db.session.commit()
+
+        return jsonify(file.serialize())
     except Exception as e:
         db.session.rollback()
         return str(e)
@@ -43,4 +62,18 @@ def fetch(id_):
 
         return jsonify(file.serialize())
     except Exception as e:
+        return str(e)
+
+
+@file_api.route('/file/<id_>', methods=['DELETE'])
+def delete(id_):
+    file = File.query.filter_by(id=id_).first()
+
+    try:
+        db.session.delete(file)
+        db.session.commit()
+
+        return jsonify(file.serialize())
+    except Exception as e:
+        db.session.rollback()
         return str(e)

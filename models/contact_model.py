@@ -19,6 +19,13 @@ class Contact(db.Model):
         self.email = email
         self.created_at = created_at
 
+    def patch_model(self, content):
+        self.telephone = content['telephone'] if content.get('telephone') else self.telephone
+        self.email = content['email'] if content.get('email') else self.email
+        self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
+        self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+
+
     def __repr__(self):
         return '<id {}>'.format(self.id)
 

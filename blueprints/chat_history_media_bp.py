@@ -33,6 +33,21 @@ def add():
         return str(e)
 
 
+@chat_history_media_api.route("/chat-history-media/<id_>", methods=['PATCH'])
+def patch(id_):
+    chat_history_media = ChatHistoryMedia.query.filter_by(id=id_).first()
+    chat_history_media.patch_model(request.get_json())
+
+    try:
+        db.session.add(chat_history_media)
+        db.session.commit()
+
+        return jsonify(chat_history_media.serialize())
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+
+
 @chat_history_media_api.route('/chats-history-medias', methods=['GET'])
 def fetch_all():
     try:

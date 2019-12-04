@@ -26,6 +26,14 @@ class ChatHistory(db.Model):
         self.user_anonymous_id = user_anonymous_id
         self.created_at = created_at
 
+    def patch_model(self, content):
+        self.message = content['message'] if content.get('message') else self.message
+        self.welcoming = content['welcoming'] if content.get('welcoming') else self.welcoming
+        self.user_anonymous = content['userAnonymous'] if content.get('userAnonymous') else self.user_anonymous
+        self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
+        self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+
+
     def __repr__(self):
         return '<id {}>'.format(self.id)
 
