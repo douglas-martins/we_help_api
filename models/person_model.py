@@ -30,10 +30,10 @@ class Person(db.Model):
         self.name = content['name'] if content.get('name') else self.name
 
         if content.get('contact'):
-            set_contact_id(content['contact'], self.contact_id)
+            models.models_create_aux.set_contact_id(content['contact'], self.contact_id)
 
         if content.get('file'):
-            set_file_id(content['file'], self.file_id)
+            models.models_create_aux.set_file_id(content['file'], self.file_id)
 
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at

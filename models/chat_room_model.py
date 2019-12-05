@@ -28,17 +28,17 @@ class ChatRoom(db.Model):
 
     def patch_model(self, content):
         if content.get('welcoming'):
-            set_welcoming_id(content['welcoming'], self.welcoming_id)
+            models.models_create_aux.set_welcoming_id(content['welcoming'], self.welcoming_id)
 
         if content.get('userAnonymous'):
-            set_user_anonymous_id(content['userAnonymous'], self.user_anonymous_id)
+            models.models_create_aux.set_user_anonymous_id(content['userAnonymous'], self.user_anonymous_id)
 
         if content.get('chatHistory'):
-            set_chat_history_id(content['chatHistory'], self.chat_history_id)
+            models.models_create_aux.set_chat_history_id(content['chatHistory'], self.chat_history_id)
 
-        self.chat_history = content['chatHistory'] if content.get('chatHistory') else self.chat_history
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+        # self.chat_history = content['chatHistory'] if content.get('chatHistory') else self.chat_history
         # self.welcoming_available.deleted_at = self.deleted_at
         # self.user_anonymous.deleted_at = self.deleted_at
         # self.chat_history.deleted_at = self.deleted_at

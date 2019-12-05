@@ -13,10 +13,15 @@ chat_room_api = Blueprint('chat_room_api', __name__)
 def add():
     content = request.get_json()
     created_at = date.today()
+    chat_history = {
+        'welcoming': content['welcomingAvailable']['welcoming'],
+        'userAnonymous': content['userAnonymous'],
+        'message': 'aa'
+    }
 
     welcoming_available_id = set_welcoming_available(content['welcomingAvailable'], created_at)
     user_anonymous_id = set_user_anonymous(content['userAnonymous'], created_at)
-    chat_history_id = set_chat_history(content['chatHistory'], created_at)
+    chat_history_id = set_chat_history(chat_history, created_at)
 
     chat_room = ChatRoom(
         welcoming_available_id=welcoming_available_id,
@@ -29,8 +34,10 @@ def add():
         db.session.add(chat_room)
         db.session.commit()
 
-        return 'Chat Room add. chat_room id={}'.format(chat_room.id)
+        # return 'Chat Room add. chat_room id={}'.format(chat_room.id)
+        return jsonify(chat_room.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -56,6 +63,7 @@ def fetch_all():
 
         return jsonify([e.serialize() for e in chats_rooms])
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -66,6 +74,7 @@ def fetch(id_):
 
         return jsonify(chat_room.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 

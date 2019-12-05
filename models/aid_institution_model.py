@@ -28,13 +28,13 @@ class AidInstitution(db.Model):
 
     def patch_model(self, content):
         self.name = content['name'] if content.get('name') else self.name
-        self.url_site = content['urlSite'] if content.get('urlSite') else self.urlSite
+        self.url_site = content['urlSite'] if content.get('urlSite') else self.url_site
 
         if content.get('contact'):
-            set_contact_id(content['contact'], self.contact_id)
+            models.models_create_aux.set_contact_id(content['contact'], self.contact_id)
 
         if content.get('file'):
-            set_file_id(content['file'], self.file_id)
+            models.models_create_aux.set_file_id(content['file'], self.file_id)
 
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at

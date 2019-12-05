@@ -28,8 +28,10 @@ def add():
         db.session.add(chat_history_media)
         db.session.commit()
 
-        return "Chat History Media add. chat_history_media id={}".format(chat_history_media.id)
+        # return "Chat History Media add. chat_history_media id={}".format(chat_history_media.id)
+        return jsonify(chat_history_media.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -55,6 +57,7 @@ def fetch_all():
 
         return jsonify([e.serialize() for e in chats_history_medias])
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -65,6 +68,7 @@ def fetch(id_):
 
         return jsonify(chat_history_media.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 

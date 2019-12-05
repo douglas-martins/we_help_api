@@ -27,8 +27,10 @@ def add():
         db.session.add(welcoming_available)
         db.session.commit()
 
-        return "Welcoming Available. welcoming_available id={}".format(welcoming_available.id)
+        # return "Welcoming Available. welcoming_available id={}".format(welcoming_available.id)
+        return jsonify(welcoming_available.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -54,6 +56,7 @@ def fetch_all():
 
         return jsonify([e.serialize() for e in welcomings_availables])
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -64,6 +67,7 @@ def fetch(id_):
 
         return jsonify(welcoming_available.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 

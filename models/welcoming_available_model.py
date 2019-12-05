@@ -26,7 +26,7 @@ class WelcomingAvailable(db.Model):
         self.on_chat = content['onChat'] if content.get('onChat') else self.on_chat
 
         if content.get('welcoming'):
-            set_welcoming_id(content['welcoming'], self.welcoming_id)
+            models.models_create_aux.set_welcoming_id(content['welcoming'], self.welcoming_id)
 
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at

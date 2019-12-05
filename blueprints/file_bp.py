@@ -20,18 +20,21 @@ def add():
         db.session.add(file)
         db.session.commit()
 
-        return "File added. file id={}".format(file.id)
+        # return "File added. file id={}".format(file.id)
+        return jsonify(file.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
 @file_api.route("/files", methods=['GET'])
 def fetch_all():
     try:
-        contacts = File.query.all()
+        contacts = File.query.filter(File.deleted_at.is_(None))
 
         return jsonify([e.serialize() for e in contacts])
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -42,4 +45,24 @@ def fetch(id_):
 
         return jsonify(file.serialize())
     except Exception as e:
+        db.session.rollback()
+        return str(e)
+
+
+@file_api.route('/file/<id_>', methods=['DELETE'])
+def delete(id_):
+    file = File.query.filter_by(id=id_).first()
+    content = {
+        'deletedAt': date.today()
+    }
+    file.patch_model(content)
+
+    try:
+        # db.session.delete(contact)
+        db.session.add(file)
+        db.session.commit()
+
+        return jsonify(file.serialize())
+    except Exception as e:
+        db.session.rollback()
         return str(e)

@@ -31,10 +31,10 @@ class ChatHistory(db.Model):
         self.message = content['message'] if content.get('message') else self.message
 
         if content.get('welcoming'):
-            set_welcoming_id(content['welcoming'], self.welcoming_id)
+            models.models_create_aux.set_welcoming_id(content['welcoming'], self.welcoming_id)
 
         if content.get('userAnonymous'):
-            set_user_anonymous_id(content['userAnonymous'], self.user_anonymous_id)
+            models.models_create_aux.set_user_anonymous_id(content['userAnonymous'], self.user_anonymous_id)
 
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at

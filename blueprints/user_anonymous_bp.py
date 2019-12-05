@@ -52,6 +52,7 @@ def fetch_all():
 
         return jsonify([e.serialize() for e in users_anonymous])
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -62,6 +63,7 @@ def fetch(id_):
 
         return jsonify(user_anonymous.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 

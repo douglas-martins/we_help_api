@@ -28,8 +28,10 @@ def add():
         db.session.add(chat_history)
         db.session.commit()
 
-        return "Chat History add. chat_history id={}".format(chat_history.id)
+        # return "Chat History add. chat_history id={}".format(chat_history.id)
+        return jsonify(chat_history.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -55,6 +57,7 @@ def fetch_all():
 
         return jsonify([e.serialize() for e in chats_history])
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -65,6 +68,7 @@ def fetch(id_):
 
         return jsonify(chat_history.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 

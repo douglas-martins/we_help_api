@@ -58,6 +58,7 @@ def fetch_all():
 
         return jsonify([e.serialize() for e in aid_institutions])
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -68,6 +69,7 @@ def fetch(id_):
 
         return jsonify(aid_institution.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 

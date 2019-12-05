@@ -27,7 +27,7 @@ class Welcoming(db.Model):
         self.password = content['password'] if content.get('password') else self.password
 
         if content.get('person'):
-            set_person_id(content['person'], self.person_id)
+            models.models_create_aux.set_person_id(content['person'], self.person_id)
 
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at

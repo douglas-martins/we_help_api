@@ -23,18 +23,21 @@ def add():
         db.session.add(contact)
         db.session.commit()
 
-        return "Contact added. contact id={}".format(contact.id)
+        # return "Contact added. contact id={}".format(contact.id)
+        return jsonify(contact.serialize())
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
 @contact_api.route("/contacts", methods=['GET'])
 def fetch_all():
     try:
-        contacts = Contact.query.all()
+        contacts = Contact.query.filter(Contact.deleted_at.is_(None))
 
         return jsonify([e.serialize() for e in contacts])
     except Exception as e:
+        db.session.rollback()
         return str(e)
 
 
@@ -45,4 +48,38 @@ def fetch(id_):
 
         return jsonify(contact.serialize())
     except Exception as e:
+        return str(e)
+
+
+@contact_api.route("/contact/<id_>", methods=['PATCH'])
+def patch(id_):
+    contact = Contact.query.filter_by(id=id_).first()
+    contact.patch_model(request.get_json())
+
+    try:
+        db.session.add(contact)
+        db.session.commit()
+
+        return jsonify(contact.serialize())
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+
+
+@contact_api.route('/contact/<id_>', methods=['DELETE'])
+def delete(id_):
+    contact = Contact.query.filter_by(id=id_).first()
+    content = {
+        'deletedAt': date.today()
+    }
+    contact.patch_model(content)
+
+    try:
+        # db.session.delete(contact)
+        db.session.add(contact)
+        db.session.commit()
+
+        return jsonify(contact.serialize())
+    except Exception as e:
+        db.session.rollback()
         return str(e)

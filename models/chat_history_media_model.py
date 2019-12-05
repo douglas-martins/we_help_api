@@ -24,10 +24,10 @@ class ChatHistoryMedia(db.Model):
 
     def patch_model(self, content):
         if content.get('chatHistory'):
-            set_chat_history_id(content['contact'], self.chat_history_id)
+            models.models_create_aux.set_chat_history_id(content['chatHistory'], self.chat_history_id)
 
         if content.get('file'):
-            set_file_id(content['file'], self.file_id)
+            models.models_create_aux.set_file_id(content['file'], self.file_id)
 
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
