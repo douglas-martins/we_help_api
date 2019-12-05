@@ -1,4 +1,5 @@
 from app import db
+from models.models_create_aux import set_person_id
 
 
 class Welcoming(db.Model):
@@ -24,9 +25,13 @@ class Welcoming(db.Model):
 
     def patch_model(self, content):
         self.password = content['password'] if content.get('password') else self.password
-        self.person = content['person'] if content.get('person') else self.person
+
+        if content.get('person'):
+            set_person_id(content['person'], self.person_id)
+
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+        # self.person.deleted_at = self.deleted_at
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

@@ -49,7 +49,7 @@ def patch(id_):
 @welcoming_api.route("/welcomings", methods=['GET'])
 def fetch_all():
     try:
-        welcomings = Welcoming.query.all()
+        welcomings = Welcoming.query.filter(Welcoming.deleted_at.is_(None))
 
         return jsonify([e.serialize() for e in welcomings])
     except Exception as e:

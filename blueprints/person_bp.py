@@ -27,7 +27,8 @@ def add():
         db.session.add(person)
         db.session.commit()
 
-        return "Person added. person id={}".format(person.id)
+        # return "Person added. person id={}".format(person.id)
+        return jsonify(person.serialize())
     except Exception as e:
         db.session.rollback()
         return str(e)
@@ -51,7 +52,7 @@ def patch(id_):
 @person_api.route("/persons", methods=['GET'])
 def fetch_all():
     try:
-        persons = Person.query.all()
+        persons = Person.query.filter(Person.deleted_at.is_(None))
 
         return jsonify([e.serialize() for e in persons])
     except Exception as e:
@@ -65,4 +66,23 @@ def fetch(id_):
 
         return jsonify(person.serialize())
     except Exception as e:
+        return str(e)
+
+
+@person_api.route('/person/<id_>', methods=['DELETE'])
+def delete(id_):
+    person = Person.query.filter_by(id=id_).first()
+    content = {
+        'deletedAt': date.today()
+    }
+    person.patch_model(content)
+
+    try:
+        # db.session.delete(aid_institution)
+        db.session.add(person)
+        db.session.commit()
+
+        return jsonify(person.serialize())
+    except Exception as e:
+        db.session.rollback()
         return str(e)

@@ -30,25 +30,25 @@ def add():
         return str(e)
 
 
-@file_api.route("/file/<id_>", methods=['PATCH'])
-def patch(id_):
-    file = File.query.filter_by(id=id_).first()
-    file.patch_model(request.get_json())
-
-    try:
-        db.session.add(file)
-        db.session.commit()
-
-        return jsonify(file.serialize())
-    except Exception as e:
-        db.session.rollback()
-        return str(e)
+# @file_api.route("/file/<id_>", methods=['PATCH'])
+# def patch(id_):
+#     file = File.query.filter_by(id=id_).first()
+#     file.patch_model(request.get_json())
+#
+#     try:
+#         db.session.add(file)
+#         db.session.commit()
+#
+#         return jsonify(file.serialize())
+#     except Exception as e:
+#         db.session.rollback()
+#         return str(e)
 
 
 @file_api.route("/files", methods=['GET'])
 def fetch_all():
     try:
-        contacts = File.query.all()
+        contacts = File.query.filter(File.deleted_at.is_(None))
 
         return jsonify([e.serialize() for e in contacts])
     except Exception as e:
@@ -68,9 +68,14 @@ def fetch(id_):
 @file_api.route('/file/<id_>', methods=['DELETE'])
 def delete(id_):
     file = File.query.filter_by(id=id_).first()
+    content = {
+        'deletedAt': date.today()
+    }
+    file.patch_model(content)
 
     try:
-        db.session.delete(file)
+        # db.session.delete(file)
+        db.session.add(file)
         db.session.commit()
 
         return jsonify(file.serialize())

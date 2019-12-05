@@ -1,4 +1,5 @@
 from app import db
+from models.models_create_aux import set_welcoming_id
 
 
 class WelcomingAvailable(db.Model):
@@ -23,9 +24,13 @@ class WelcomingAvailable(db.Model):
 
     def patch_model(self, content):
         self.on_chat = content['onChat'] if content.get('onChat') else self.on_chat
-        self.welcoming = content['welcoming'] if content.get('welcoming') else self.welcoming
+
+        if content.get('welcoming'):
+            set_welcoming_id(content['welcoming'], self.welcoming_id)
+
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+        # self.welcoming.deleted_at = self.deleted_at
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

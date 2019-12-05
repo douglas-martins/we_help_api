@@ -1,4 +1,5 @@
 from app import db
+from models.models_create_aux import set_welcoming_id, set_user_anonymous_id, set_chat_history_id
 
 
 class ChatRoom(db.Model):
@@ -26,12 +27,21 @@ class ChatRoom(db.Model):
         self.created_at = created_at
 
     def patch_model(self, content):
-        self.welcoming_available = content['welcomingAvailable'] if content.get('welcomingAvailable') else self.welcoming_available
-        self.user_anonymous = content['userAnonymous'] if content.get('userAnonymous') else self.user_anonymous
+        if content.get('welcoming'):
+            set_welcoming_id(content['welcoming'], self.welcoming_id)
+
+        if content.get('userAnonymous'):
+            set_user_anonymous_id(content['userAnonymous'], self.user_anonymous_id)
+
+        if content.get('chatHistory'):
+            set_chat_history_id(content['chatHistory'], self.chat_history_id)
+
         self.chat_history = content['chatHistory'] if content.get('chatHistory') else self.chat_history
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
-
+        # self.welcoming_available.deleted_at = self.deleted_at
+        # self.user_anonymous.deleted_at = self.deleted_at
+        # self.chat_history.deleted_at = self.deleted_at
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

@@ -1,4 +1,5 @@
 from app import db
+from models.models_create_aux import set_chat_history_id, set_file_id
 
 
 class ChatHistoryMedia(db.Model):
@@ -22,10 +23,15 @@ class ChatHistoryMedia(db.Model):
         self.created_at = created_at
 
     def patch_model(self, content):
-        self.chat_history = content['chatHistory'] if content.get('chatHistory') else self.chat_history
-        self.file = content['file'] if content.get('file') else self.file
+        if content.get('chatHistory'):
+            set_chat_history_id(content['contact'], self.chat_history_id)
+
+        if content.get('file'):
+            set_file_id(content['file'], self.file_id)
+
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+        # self.file.deleted_at = self.deleted_at
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

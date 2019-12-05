@@ -28,7 +28,8 @@ def add():
         db.session.add(aid_institution)
         db.session.commit()
 
-        return "Aid Institution add. aid_institution id={}".format(aid_institution.id)
+        # return "Aid Institution add. aid_institution id={}".format(aid_institution.id)
+        return jsonify(aid_institution.serialize())
     except Exception as e:
         db.session.rollback()
         return str(e)
@@ -37,6 +38,7 @@ def add():
 @aid_institution_api.route("/aid-institution/<id_>", methods=['PATCH'])
 def patch(id_):
     aid_institution = AidInstitution.query.filter_by(id=id_).first()
+    aid_institution.updated_at = date.today()
     aid_institution.patch_model(request.get_json())
 
     try:
@@ -52,7 +54,7 @@ def patch(id_):
 @aid_institution_api.route('/aid-institutions', methods=['GET'])
 def fetch_all():
     try:
-        aid_institutions = AidInstitution.query.all()
+        aid_institutions = AidInstitution.query.filter(AidInstitution.deleted_at.is_(None))
 
         return jsonify([e.serialize() for e in aid_institutions])
     except Exception as e:
@@ -66,4 +68,23 @@ def fetch(id_):
 
         return jsonify(aid_institution.serialize())
     except Exception as e:
+        return str(e)
+
+
+@aid_institution_api.route('/aid-institution/<id_>', methods=['DELETE'])
+def delete(id_):
+    aid_institution = AidInstitution.query.filter_by(id=id_).first()
+    content = {
+        'deletedAt': date.today()
+    }
+    aid_institution.patch_model(content)
+
+    try:
+        # db.session.delete(aid_institution)
+        db.session.add(aid_institution)
+        db.session.commit()
+
+        return jsonify(aid_institution.serialize())
+    except Exception as e:
+        db.session.rollback()
         return str(e)

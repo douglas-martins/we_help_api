@@ -1,4 +1,5 @@
 from app import db
+from models.models_create_aux import set_welcoming_id, set_user_anonymous_id
 
 
 class ChatHistory(db.Model):
@@ -28,11 +29,17 @@ class ChatHistory(db.Model):
 
     def patch_model(self, content):
         self.message = content['message'] if content.get('message') else self.message
-        self.welcoming = content['welcoming'] if content.get('welcoming') else self.welcoming
-        self.user_anonymous = content['userAnonymous'] if content.get('userAnonymous') else self.user_anonymous
+
+        if content.get('welcoming'):
+            set_welcoming_id(content['welcoming'], self.welcoming_id)
+
+        if content.get('userAnonymous'):
+            set_user_anonymous_id(content['userAnonymous'], self.user_anonymous_id)
+
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
-
+        # self.welcoming.deleted_at = self.deleted_at
+        # self.user_anonymous.deleted_at = self.deleted_at
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

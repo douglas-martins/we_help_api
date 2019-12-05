@@ -26,7 +26,7 @@ from blueprints.chat_history_media_bp import chat_history_media_api
 from blueprints.chat_room_bp import chat_room_api
 
 app.register_blueprint(contact_api)
-app.register_blueprint(file_api, allow_patch_many=True)
+app.register_blueprint(file_api)
 app.register_blueprint(person_api)
 app.register_blueprint(welcoming_api)
 app.register_blueprint(aid_institution_api)

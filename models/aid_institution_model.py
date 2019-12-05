@@ -1,4 +1,5 @@
 from app import db
+from models.models_create_aux import set_contact_id, set_file_id
 
 
 class AidInstitution(db.Model):
@@ -28,10 +29,17 @@ class AidInstitution(db.Model):
     def patch_model(self, content):
         self.name = content['name'] if content.get('name') else self.name
         self.url_site = content['urlSite'] if content.get('urlSite') else self.urlSite
-        self.contact = content['contact'] if content.get('contact') else self.contact
-        self.file = content['file'] if content.get('file') else self.file
+
+        if content.get('contact'):
+            set_contact_id(content['contact'], self.contact_id)
+
+        if content.get('file'):
+            set_file_id(content['file'], self.file_id)
+
         self.updated_at = content['updatedAt'] if content.get('updatedAt') else self.created_at
         self.deleted_at = content['deletedAt'] if content.get('deletedAt') else self.deleted_at
+        self.contact.deleted_at = self.deleted_at
+        self.file.deleted_at = self.deleted_at
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

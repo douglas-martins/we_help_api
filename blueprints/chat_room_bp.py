@@ -52,7 +52,7 @@ def patch(id_):
 @chat_room_api.route('/chats-rooms', methods=['GET'])
 def fetch_all():
     try:
-        chats_rooms = ChatRoom.query.all()
+        chats_rooms = ChatRoom.query.filter(ChatRoom.deleted_at.is_(None))
 
         return jsonify([e.serialize() for e in chats_rooms])
     except Exception as e:
@@ -66,4 +66,23 @@ def fetch(id_):
 
         return jsonify(chat_room.serialize())
     except Exception as e:
+        return str(e)
+
+
+@chat_room_api.route('/chat-room/<id_>', methods=['DELETE'])
+def delete(id_):
+    chat_room = ChatRoom.query.filter_by(id=id_).first()
+    content = {
+        'deletedAt': date.today()
+    }
+    chat_room.patch_model(content)
+
+    try:
+        # db.session.delete(chat_room)
+        db.session.add(chat_room)
+        db.session.commit()
+
+        return jsonify(chat_room.serialize())
+    except Exception as e:
+        db.session.rollback()
         return str(e)

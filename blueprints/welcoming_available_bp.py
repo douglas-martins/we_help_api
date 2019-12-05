@@ -50,7 +50,7 @@ def patch(id_):
 @welcoming_available_api.route('/welcomings-availables', methods=['GET'])
 def fetch_all():
     try:
-        welcomings_availables = WelcomingAvailable.query.all()
+        welcomings_availables = WelcomingAvailable.query.filter(WelcomingAvailable.deleted_at.is_(None))
 
         return jsonify([e.serialize() for e in welcomings_availables])
     except Exception as e:
@@ -64,4 +64,23 @@ def fetch(id_):
 
         return jsonify(welcoming_available.serialize())
     except Exception as e:
+        return str(e)
+
+
+@welcoming_available_api.route('/welcoming-available/<id_>', methods=['DELETE'])
+def delete(id_):
+    welcoming_available = WelcomingAvailable.query.filter_by(id=id_).first()
+    content = {
+        'deletedAt': date.today()
+    }
+    welcoming_available.patch_model(content)
+
+    try:
+        # db.session.delete(welcoming_available)
+        db.session.add(welcoming_available)
+        db.session.commit()
+
+        return jsonify(welcoming_available.serialize())
+    except Exception as e:
+        db.session.rollback()
         return str(e)

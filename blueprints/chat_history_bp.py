@@ -51,7 +51,7 @@ def patch(id_):
 @chat_history_api.route('/chats-history', methods=['GET'])
 def fetch_all():
     try:
-        chats_history = ChatHistory.query.all()
+        chats_history = ChatHistory.query.filter(ChatHistory.deleted_at.is_(None))
 
         return jsonify([e.serialize() for e in chats_history])
     except Exception as e:
@@ -65,4 +65,23 @@ def fetch(id_):
 
         return jsonify(chat_history.serialize())
     except Exception as e:
+        return str(e)
+
+
+@chat_history_api.route('/chat-history/<id_>', methods=['DELETE'])
+def delete(id_):
+    chat_history = ChatHistory.query.filter_by(id=id_).first()
+    content = {
+        'deletedAt': date.today()
+    }
+    chat_history.patch_model(content)
+
+    try:
+        # db.session.delete(chat_history)
+        db.session.add(chat_history)
+        db.session.commit()
+
+        return jsonify(chat_history.serialize())
+    except Exception as e:
+        db.session.rollback()
         return str(e)
