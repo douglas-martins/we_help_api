@@ -3,8 +3,9 @@ from datetime import date
 from flask import request, jsonify, Blueprint
 
 from app import db
-from models.models_create_aux import set_contact, set_file
 from models.person_model import Person
+from models.contact_model import Contact
+from models.file_model import File
 
 person_api = Blueprint('person_api', __name__)
 
@@ -13,8 +14,8 @@ person_api = Blueprint('person_api', __name__)
 def add():
     content = request.get_json()
     created_at = date.today()
-    contact_id = set_contact(content['contact'], created_at)
-    file_id = set_file(content['file'], created_at)
+    contact_id = __set_contact(content, created_at)
+    file_id = __set_file(content, created_at)
 
     person = Person(
         contact_id=contact_id,
@@ -27,39 +28,22 @@ def add():
         db.session.add(person)
         db.session.commit()
 
-        # return "Person added. person id={}".format(person.id)
-        return jsonify(person.serialize())
+        return "Person added. person id={}".format(person.id)
     except Exception as e:
-        db.session.rollback()
-        return str(e)
-
-
-@person_api.route("/person/<id_>", methods=['PATCH'])
-def patch(id_):
-    person = Person.query.filter_by(id=id_).first()
-    person.patch_model(request.get_json())
-
-    try:
-        db.session.add(person)
-        db.session.commit()
-
-        return jsonify(person.serialize())
-    except Exception as e:
-        db.session.rollback()
         return str(e)
 
 
 @person_api.route("/persons", methods=['GET'])
 def fetch_all():
     try:
-        persons = Person.query.filter(Person.deleted_at.is_(None))
+        persons = Person.query.all()
 
         return jsonify([e.serialize() for e in persons])
     except Exception as e:
         return str(e)
 
 
-@person_api.route("/person/<id_>", methods=['GET'])
+@person_api.route("/persons/<id_>", methods=['GET'])
 def fetch(id_):
     try:
         person = Person.query.filter_by(id=id_).first()
@@ -69,20 +53,32 @@ def fetch(id_):
         return str(e)
 
 
-@person_api.route('/person/<id_>', methods=['DELETE'])
-def delete(id_):
-    person = Person.query.filter_by(id=id_).first()
-    content = {
-        'deletedAt': date.today()
-    }
-    person.patch_model(content)
+def __set_contact(content, created_at):
+    contact = Contact(
+        telephone=content['contact']['telephone'],
+        email=content['contact']['email'],
+        created_at=created_at
+    )
 
     try:
-        # db.session.delete(aid_institution)
-        db.session.add(person)
+        db.session.add(contact)
         db.session.commit()
 
-        return jsonify(person.serialize())
+        return contact.id
     except Exception as e:
-        db.session.rollback()
+        return str(e)
+
+
+def __set_file(content, created_at):
+    file = File(
+        url=content['file']['url'],
+        created_at=created_at
+    )
+
+    try:
+        db.session.add(file)
+        db.session.commit()
+
+        return file.id
+    except Exception as e:
         return str(e)

@@ -1,5 +1,5 @@
 from app import db
-from models.models_create_aux import set_person_id
+import models.models_create_aux
 
 
 class Welcoming(db.Model):

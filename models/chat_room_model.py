@@ -1,5 +1,5 @@
 from app import db
-from models.models_create_aux import set_welcoming_id, set_user_anonymous_id, set_chat_history_id
+import models.models_create_aux
 
 
 class ChatRoom(db.Model):

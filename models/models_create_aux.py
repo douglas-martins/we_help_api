@@ -1,16 +1,18 @@
 from app import db
-from models.chat_history_model import ChatHistory
-from models.chat_history_media_model import ChatHistoryMedia
-from models.chat_room_model import ChatRoom
-from models.contact_model import Contact
-from models.file_model import File
-from models.person_model import Person
-from models.user_anonymous_model import UserAnonymous
-from models.welcoming_available_model import WelcomingAvailable
-from models.welcoming_model import Welcoming
+import abc
+import models.chat_history_model
+import models.chat_history_media_model
+import models.chat_room_model
+import models.contact_model
+import models.file_model
+import models.person_model
+import models.user_anonymous_model
+import models.welcoming_available_model
+import models.welcoming_model
 from datetime import date
 
 
+@abc.abstractmethod
 def set_welcoming_available(content, created_at):
     welcoming_id = set_welcoming(content['welcoming'], created_at)
 
@@ -29,6 +31,7 @@ def set_welcoming_available(content, created_at):
         return str(e)
 
 
+@abc.abstractmethod
 def set_welcoming_available_id(content, id):
     welcoming_available = WelcomingAvailable.query.filter_by(id=id).first()
     set_welcoming_id(content['welcoming'], welcoming_available.welcoming_id)
@@ -44,6 +47,7 @@ def set_welcoming_available_id(content, id):
         return str(e)
 
 
+@abc.abstractmethod
 def set_chat_room(content, created_at):
     welcoming_available_id = set_welcoming_available(content['welcomingAvailable'], created_at)
     user_anonymous_id = set_user_anonymous(content['userAnonymous'], created_at)
@@ -65,6 +69,7 @@ def set_chat_room(content, created_at):
         return str(e)
 
 
+@abc.abstractmethod
 def set_chat_room_id(content, id):
     chat_room = ChatRoom.query.filter_by(id=id).first()
     set_welcoming_available_id(content['welcomingAvailable'], chat_room.welcoming_available_id)
@@ -82,6 +87,7 @@ def set_chat_room_id(content, id):
         return str(e)
 
 
+@abc.abstractmethod
 def set_chat_history_media(content, created_at):
     chat_history_id = set_chat_history(content['chatHistory'], created_at)
     file_id = set_file(content['file'], created_at)
@@ -101,6 +107,7 @@ def set_chat_history_media(content, created_at):
         return str(e)
 
 
+@abc.abstractmethod
 def set_chat_history_media_id(content, id):
     chat_history_media = ChatHistoryMedia.query.filter_by(id=id).first()
     set_chat_history_id(content['chatHistory'], chat_history_media.chat_history_id)
@@ -117,6 +124,7 @@ def set_chat_history_media_id(content, id):
         return str(e)
 
 
+@abc.abstractmethod
 def set_chat_history(content, created_at):
     welcoming_id = set_welcoming(content['welcoming'], created_at)
     user_anonymous_id = set_user_anonymous(content['userAnonymous'], created_at)
@@ -137,6 +145,7 @@ def set_chat_history(content, created_at):
         return str(e)
 
 
+@abc.abstractmethod
 def set_chat_history_id(content, id):
     chat_history = ChatHistory.query.filter_by(id=id).first()
     set_welcoming_id(content['welcoming'], chat_history.welcoming_id)
@@ -153,6 +162,7 @@ def set_chat_history_id(content, id):
         return str(e)
 
 
+@abc.abstractmethod
 def set_user_anonymous(content, created_at):
     user_anonymous = UserAnonymous(
         name=content['name'],
@@ -169,6 +179,7 @@ def set_user_anonymous(content, created_at):
         return str(e)
 
 
+@abc.abstractmethod
 def set_user_anonymous_id(content, id):
     user_anonymous = UserAnonymous.query.filter_by(id=id).first()
     user_anonymous.updated_at = date.today()
@@ -184,6 +195,7 @@ def set_user_anonymous_id(content, id):
         return str(e)
 
 
+@abc.abstractmethod
 def set_welcoming(content, created_at):
     person_id = set_person(content['person'], created_at)
 
@@ -203,6 +215,7 @@ def set_welcoming(content, created_at):
         return str(e)
 
 
+@abc.abstractmethod
 def set_welcoming_id(content, id):
     welcoming = File.query.filter_by(id=id).first()
     set_person_id(content['person'], welcoming.person_id)
@@ -219,6 +232,7 @@ def set_welcoming_id(content, id):
         return str(e)
 
 
+@abc.abstractmethod
 def set_person(content, created_at):
     contact_id = set_contact(content['contact'], created_at)
     file_id = set_file(content['file'], created_at)
@@ -240,6 +254,7 @@ def set_person(content, created_at):
         return str(e)
 
 
+@abc.abstractmethod
 def set_person_id(content, id):
     person = Person.query.filter_by(id=id).first()
     set_contact_id(content['contact'], person.contact_id)
@@ -267,6 +282,7 @@ def set_person_id(content, id):
         return str(e)
 
 
+@abc.abstractmethod
 def set_contact(content, created_at):
     contact = Contact(
         telephone=content['telephone'] if content.get('telephone') else None,
@@ -284,6 +300,7 @@ def set_contact(content, created_at):
         return str(e)
 
 
+@abc.abstractmethod
 def set_contact_id(content, id):
     contact = Contact.query.filter_by(id=id).first()
     contact.updated_at = date.today()
@@ -315,6 +332,7 @@ def set_file(content, created_at):
         return str(e)
 
 
+@abc.abstractmethod
 def set_file_id(content, id):
     file = File.query.filter_by(id=id).first()
     file.updated_at = date.today()
